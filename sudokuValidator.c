@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/syscall.h>
-#include <omp.h>
+// #include <omp.h>
 
 // Global variables
 int sudoku[9][9];
@@ -76,7 +76,7 @@ validate3x3(int matrix[3][3])
 // Main Program
 int 
 main(int argc, char* argv[]) {
-	omp_set_num_threads(1);
+	// omp_set_num_threads(1);
 	// Define variables
 	int fd;
 	char *fileName;
@@ -135,8 +135,11 @@ main(int argc, char* argv[]) {
 	} else {
 		// Create pthread to review columns
 		pthread_t columnThread;
-		pthread_create(&columnThread, NULL, validateColumns, NULL);
+		pthread_t rowsThread;
+		int *resValidRows;
 		int *resValidColumns;
+		pthread_create(&columnThread, NULL, validateColumns, NULL);
+		pthread_create(&rowsThread, NULL, validateRows, NULL);
 		pthread_join(columnThread, (void**) &resValidColumns);
 		printf("Numero del thread: %d\n", syscall(SYS_gettid));
 		if (resValidColumns != 0)
@@ -144,9 +147,6 @@ main(int argc, char* argv[]) {
 		// Wait for child process
 		wait(NULL);
 		// Review rows
-		pthread_t rowsThread;
-		pthread_create(&rowsThread, NULL, validateRows, NULL);
-		int *resValidRows;
 		pthread_join(rowsThread, (void**) &resValidRows);
 		if (resValidRows != 0)
 			exitWithError("Las filas no son válidas", 6);
