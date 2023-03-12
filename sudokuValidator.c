@@ -16,9 +16,23 @@ exitWithError(char* error, int errorCode) {
 	exit(errorCode);
 }
 
+// Validations 0 -> ok; 1 -> not ok
+int validateRow(int row[9])
+{
+	return 0;
+}
 
-// Validations
 
+int validateColumn(int row[9])
+{
+	return 0;
+}
+
+
+int validate3x3(int matrix[3][3])
+{
+	return 0;
+}
 
 // Main Program
 int 
